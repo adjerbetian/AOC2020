@@ -1,7 +1,9 @@
 import { buildExpenseReport } from "./ExpenseReport";
-import { fileReader, µ } from "../utils";
+import { buildLogger, fileReader, µ } from "../utils";
+
+const logger = buildLogger("day 1");
 
 const expenses = fileReader.readIntLines("day1/input.txt");
 const report = buildExpenseReport(expenses);
-console.log("part 1", µ.mult(report.getEntriesSummingTo(2, 2020).entries));
-console.log("part 2", µ.mult(report.getEntriesSummingTo(3, 2020).entries));
+logger.part1(µ.mult(report.getEntriesSummingTo(2, 2020).entries));
+logger.part2(µ.mult(report.getEntriesSummingTo(3, 2020).entries));
