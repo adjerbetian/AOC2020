@@ -1,3 +1,5 @@
+import { µ } from "../utils";
+
 export type Password = string;
 export interface PasswordPolicy {
     letter: string;
@@ -7,7 +9,7 @@ export interface PasswordPolicy {
 export const Password = {
     isValidPolicy1(password: Password, policy: PasswordPolicy) {
         const letters = password.split("").filter((l) => l === policy.letter);
-        return isInRange(letters.length, policy.values);
+        return µ.isInRange(letters.length, policy.values);
     },
     isValidPolicy2(password: Password, policy: PasswordPolicy) {
         return (
@@ -18,7 +20,3 @@ export const Password = {
         );
     },
 };
-
-function isInRange(n: number, [min, max]: [number, number]) {
-    return n >= min && n <= max;
-}

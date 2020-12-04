@@ -8,6 +8,10 @@ export const µ = {
     count<T>(list: T[], predicate: (v: T) => boolean) {
         return list.filter(predicate).length;
     },
+    isInRange(n: number | string, [min, max]: [number, number]) {
+        n = typeof n === "string" ? parseInt(n) : n;
+        return n >= min && n <= max;
+    },
     trimIndent(text: string) {
         let lines = text.split("\n");
         trimEmptyLines();
