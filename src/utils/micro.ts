@@ -1,3 +1,5 @@
+import { Range } from "./types";
+
 export const µ = {
     sum(numbers: number[]): number {
         return numbers.reduce((acc, n) => acc + n, 0);
@@ -8,7 +10,25 @@ export const µ = {
     count<T>(list: T[], predicate: (v: T) => boolean) {
         return list.filter(predicate).length;
     },
-    isInRange(n: number | string, [min, max]: [number, number]) {
+    maxBy<T>(values: T[], predicate: (value: T) => number) {
+        return µ.max(values.map(predicate));
+    },
+    max(values: number[]) {
+        return values.reduce((max, value) => Math.max(value, max));
+    },
+    min(values: number[]) {
+        return values.reduce((max, value) => Math.min(value, max));
+    },
+    sortBy<T>(values: T[], predicate: (value: T) => number) {
+        return µ.sort(values.map(predicate));
+    },
+    sort(values: number[]) {
+        return [...values].sort((a, b) => a - b);
+    },
+    range(numbers: number[]): Range {
+        return [µ.min(numbers), µ.max(numbers)];
+    },
+    isInRange(n: number | string, [min, max]: Range) {
         n = typeof n === "string" ? parseInt(n) : n;
         return n >= min && n <= max;
     },

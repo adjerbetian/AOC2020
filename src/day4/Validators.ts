@@ -1,4 +1,4 @@
-import { µ } from "../utils";
+import { Range, µ } from "../utils";
 
 interface FieldValidator {
     (field: string | undefined): boolean;
@@ -36,6 +36,6 @@ export const validators: Record<string, FieldValidator> = {
         return true;
     },
 };
-function isYearInRange(value: string, [min, max]: [number, number]) {
+function isYearInRange(value: string, [min, max]: Range) {
     return /^\d{4}$/.test(value) && µ.isInRange(value, [min, max]);
 }

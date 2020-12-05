@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { buildPassword } from "./Password";
+import { Range } from "../utils";
 
 describe("day 4 - Password.isValid", () => {
     let validData: Record<string, string>;
@@ -85,10 +86,7 @@ describe("day 4 - Password.isValid", () => {
         });
     });
 
-    function itShouldBeAYearInRange(
-        field: string,
-        [min, max]: [number, number]
-    ) {
+    function itShouldBeAYearInRange(field: string, [min, max]: Range) {
         describe(`"${field}" should be a year in range ${min}-${max}`, () => {
             it("should be invalid when not only 4 digits", () => {
                 expect(isValidWith({ [field]: "abce" })).to.be.false;
