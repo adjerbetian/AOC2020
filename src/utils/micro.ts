@@ -1,6 +1,9 @@
 import { Range } from "./types";
 
 export const µ = {
+    sumWith<T>(values: T[], predicate: (value: T) => number) {
+        return µ.sum(values.map(predicate));
+    },
     sum(numbers: number[]): number {
         return numbers.reduce((acc, n) => acc + n, 0);
     },
@@ -10,16 +13,25 @@ export const µ = {
     count<T>(list: T[], predicate: (v: T) => boolean) {
         return list.filter(predicate).length;
     },
-    maxBy<T>(values: T[], predicate: (value: T) => number) {
+    maxWith<T>(values: T[], predicate: (value: T) => number) {
         return µ.max(values.map(predicate));
     },
     max(values: number[]) {
         return values.reduce((max, value) => Math.max(value, max));
     },
+    minWith<T>(values: T[], predicate: (value: T) => number): T {
+        return values.reduce((max, value) => {
+            if (predicate(value) > predicate(max)) {
+                return value;
+            } else {
+                return max;
+            }
+        });
+    },
     min(values: number[]) {
         return values.reduce((max, value) => Math.min(value, max));
     },
-    sortBy<T>(values: T[], predicate: (value: T) => number) {
+    sortWith<T>(values: T[], predicate: (value: T) => number) {
         return µ.sort(values.map(predicate));
     },
     sort(values: number[]) {
@@ -31,6 +43,18 @@ export const µ = {
     isInRange(n: number | string, [min, max]: Range) {
         n = typeof n === "string" ? parseInt(n) : n;
         return n >= min && n <= max;
+    },
+    intersection<T>(set1: Set<T>, set2: Set<T>): Set<T> {
+        const result = new Set<T>();
+        set1.forEach((element) => {
+            if (set2.has(element)) result.add(element);
+        });
+        return result;
+    },
+    union<T>(set1: Set<T>, set2: Set<T>): Set<T> {
+        const result = new Set<T>(set1);
+        set2.forEach((element) => result.add(element));
+        return result;
     },
     trimIndent(text: string) {
         let lines = text.split("\n");
