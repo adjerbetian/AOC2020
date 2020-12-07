@@ -56,6 +56,11 @@ export const µ = {
         set2.forEach((element) => result.add(element));
         return result;
     },
+    dictionary<T>(array: T[], key: keyof T): { [key: string]: T } {
+        return Object.fromEntries(
+            array.map((element) => [element[key], element])
+        );
+    },
     trimIndent(text: string) {
         let lines = text.split("\n");
         trimEmptyLines();
