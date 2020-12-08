@@ -61,6 +61,20 @@ export const µ = {
             array.map((element) => [element[key], element])
         );
     },
+    assertIsNever(arg: never): never {
+        throw new Error(`Unexpected object ${arg}`);
+    },
+    isNumber(value: any): value is number {
+        return typeof value === "number";
+    },
+    isNull(value: any): value is null {
+        return value === null;
+    },
+    findIndexes<T>(array: T[], predicate: (element: T) => boolean): number[] {
+        return array
+            .map((element, index) => (predicate(element) ? index : null))
+            .filter(µ.isNumber);
+    },
     trimIndent(text: string) {
         let lines = text.split("\n");
         trimEmptyLines();
