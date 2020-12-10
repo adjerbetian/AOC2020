@@ -3,7 +3,7 @@ import { Group } from "./Group";
 
 const logger = buildLogger("day 6");
 const groups = fileReader
-    .read("day6/input.txt")
+    .read("day06/input.txt")
     .split("\n\n")
     .map((group) => group.split("\n"));
 

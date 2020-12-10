@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Password } from "./Password";
 
-describe("day 2 - Password", () => {
+describe("day 02 - Password", () => {
     //prettier-ignore
     it("should validate policy 1", () => {
         expect(Password.isValidPolicy1("abcde", { letter: "a", values: [1, 3] })).to.be.true;

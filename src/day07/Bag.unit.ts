@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { Bag } from "./Bag";
 import { Rule } from "./Rule";
 
-describe("day 7 - Bag", function () {
+describe("day 07 - Bag", function () {
     const rules = [
         "light red bags contain 1 bright white bag, 2 muted yellow bags.",
         "dark orange bags contain 3 bright white bags, 4 muted yellow bags.",

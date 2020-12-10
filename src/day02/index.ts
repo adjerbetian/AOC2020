@@ -2,7 +2,7 @@ import { buildLogger, fileReader, µ } from "../utils";
 import { Password, PasswordPolicy } from "./Password";
 
 const logger = buildLogger("day 2");
-const list = fileReader.readLines("day2/input.txt").map(parsePasswordPolicy);
+const list = fileReader.readLines("day02/input.txt").map(parsePasswordPolicy);
 
 logger.part1(
     µ.count(list, ({ password, policy }) =>

@@ -3,7 +3,7 @@ import { buildPassword } from "./Password";
 
 const logger = buildLogger("day 4");
 const passwords = fileReader
-    .read("day4/input.txt")
+    .read("day04/input.txt")
     .split(/\n\n/)
     .map((line) =>
         Object.fromEntries(

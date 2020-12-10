@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Rule } from "./Rule";
 
-describe("day 7 - Rule", () => {
+describe("day 07 - Rule", () => {
     it("parse", () => {
         expect(
             Rule.parse(

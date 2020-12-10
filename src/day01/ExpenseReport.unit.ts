@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { buildExpenseReport } from "./ExpenseReport";
 
-describe("day 1 - ExpenseReport", () => {
+describe("day 01 - ExpenseReport", () => {
     it("should return the 1 entries summing to 2020", () => {
         const report = buildExpenseReport([2019, 2020, 2021]);
 

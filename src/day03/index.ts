@@ -3,7 +3,7 @@ import { buildTreeMap } from "./TreeMap";
 import { Direction } from "./Position";
 
 const logger = buildLogger("day 3");
-const treeMap = buildTreeMap(fileReader.read("day3/input.txt"));
+const treeMap = buildTreeMap(fileReader.read("day03/input.txt"));
 
 logger.part1(treeMap.countTreesInDirection({ down: 1, right: 3 }));
 

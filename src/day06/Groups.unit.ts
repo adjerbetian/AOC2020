@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Group } from "./Group";
 
-describe("day 6 - Group", () => {
+describe("day 06 - Group", () => {
     it("countQuestionsAnyone", () => {
         expect(Group.countQuestionsAnyone(["abc"])).to.equal(3);
         expect(Group.countQuestionsAnyone(["a", "b", "c"])).to.equal(3);

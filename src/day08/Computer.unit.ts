@@ -2,7 +2,7 @@ import { Instruction } from "./Instruction";
 import { Computer } from "./Computer";
 import { expect } from "chai";
 
-describe("day 8 - Computer", () => {
+describe("day 08 - Computer", () => {
     it("should run until the loop is found", function () {
         const instructions: Instruction[] = [
             { operation: "nop", argument: +0 },

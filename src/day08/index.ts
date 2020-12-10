@@ -4,7 +4,7 @@ import { Computer } from "./Computer";
 
 const logger = buildLogger("day 8");
 const instructions = fileReader
-    .readLines("day8/input.txt")
+    .readLines("day08/input.txt")
     .map(Instruction.parse);
 
 logger.part1(Computer.run(instructions));

@@ -3,7 +3,7 @@ import { µ } from "../utils";
 import { buildTreeMap } from "./TreeMap";
 import { Position } from "./Position";
 
-describe("day3 - TreeMap", () => {
+describe("day 03 - TreeMap", () => {
     const treeMap = buildTreeMap(
         µ.trimIndent(`
             ..##.......

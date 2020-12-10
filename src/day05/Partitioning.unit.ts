@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Partitioning } from "./Partitioning";
 
-describe("day 5 - Partitioning", () => {
+describe("day 05 - Partitioning", () => {
     it("getRow", () => {
         expect(Partitioning.getRow("FBFBBFFRLR")).to.equal(44);
         expect(Partitioning.getRow("BFFFBBFRRR")).to.equal(70);

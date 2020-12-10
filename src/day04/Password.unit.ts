@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { buildPassword } from "./Password";
 import { Range } from "../utils";
 
-describe("day 4 - Password.isValid", () => {
+describe("day 04 - Password.isValid", () => {
     let validData: Record<string, string>;
 
     beforeEach(() => {
