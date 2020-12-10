@@ -1,25 +1,25 @@
 import { Range } from "./types";
 
 export const µ = {
-    sumWith<T>(values: T[], predicate: (value: T) => number) {
+    sumWith<T>(values: readonly T[], predicate: (value: T) => number) {
         return µ.sum(values.map(predicate));
     },
-    sum(numbers: number[]): number {
+    sum(numbers: readonly number[]): number {
         return numbers.reduce((acc, n) => acc + n, 0);
     },
-    mult(numbers: number[]) {
+    mult(numbers: readonly number[]) {
         return numbers.reduce((acc, n) => acc * n, 1);
     },
-    count<T>(list: T[], predicate: (v: T) => boolean) {
+    count<T>(list: readonly T[], predicate: (v: T) => boolean) {
         return list.filter(predicate).length;
     },
-    maxWith<T>(values: T[], predicate: (value: T) => number) {
+    maxWith<T>(values: readonly T[], predicate: (value: T) => number) {
         return µ.max(values.map(predicate));
     },
-    max(values: number[]) {
+    max(values: readonly number[]) {
         return values.reduce((max, value) => Math.max(value, max));
     },
-    minWith<T>(values: T[], predicate: (value: T) => number): T {
+    minWith<T>(values: readonly T[], predicate: (value: T) => number): T {
         return values.reduce((max, value) => {
             if (predicate(value) > predicate(max)) {
                 return value;
@@ -28,35 +28,35 @@ export const µ = {
             }
         });
     },
-    min(values: number[]) {
+    min(values: readonly number[]) {
         return values.reduce((max, value) => Math.min(value, max));
     },
-    sortWith<T>(values: T[], predicate: (value: T) => number) {
+    sortWith<T>(values: readonly T[], predicate: (value: T) => number) {
         return µ.sort(values.map(predicate));
     },
-    sort(values: number[]) {
+    sort(values: readonly number[]) {
         return [...values].sort((a, b) => a - b);
     },
-    range(numbers: number[]): Range {
+    range(numbers: readonly number[]): Range {
         return [µ.min(numbers), µ.max(numbers)];
     },
     isInRange(n: number | string, [min, max]: Range) {
         n = typeof n === "string" ? parseInt(n) : n;
         return n >= min && n <= max;
     },
-    intersection<T>(set1: Set<T>, set2: Set<T>): Set<T> {
+    intersection<T>(set1: ReadonlySet<T>, set2: ReadonlySet<T>): Set<T> {
         const result = new Set<T>();
         set1.forEach((element) => {
             if (set2.has(element)) result.add(element);
         });
         return result;
     },
-    union<T>(set1: Set<T>, set2: Set<T>): Set<T> {
+    union<T>(set1: ReadonlySet<T>, set2: ReadonlySet<T>): Set<T> {
         const result = new Set<T>(set1);
         set2.forEach((element) => result.add(element));
         return result;
     },
-    dictionary<T>(array: T[], key: keyof T): { [key: string]: T } {
+    dictionary<T>(array: readonly T[], key: keyof T): { [key: string]: T } {
         return Object.fromEntries(
             array.map((element) => [element[key], element])
         );
@@ -70,10 +70,16 @@ export const µ = {
     isNull(value: any): value is null {
         return value === null;
     },
-    findIndexes<T>(array: T[], predicate: (element: T) => boolean): number[] {
+    findIndexes<T>(
+        array: readonly T[],
+        predicate: (element: T) => boolean
+    ): number[] {
         return array
             .map((element, index) => (predicate(element) ? index : null))
             .filter(µ.isNumber);
+    },
+    valuesAt<T>(array: readonly T[], indexes: number[]) {
+        return indexes.map((i) => array[i]);
     },
     trimIndent(text: string) {
         let lines = text.split("\n");
