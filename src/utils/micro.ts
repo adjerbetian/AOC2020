@@ -81,6 +81,9 @@ export const µ = {
     valuesAt<T>(array: readonly T[], indexes: number[]) {
         return indexes.map((i) => array[i]);
     },
+    copyArray<T>(array: readonly T[]): T[] {
+        return array.map((value) => value);
+    },
     trimIndent(text: string) {
         let lines = text.split("\n");
         trimEmptyLines();
