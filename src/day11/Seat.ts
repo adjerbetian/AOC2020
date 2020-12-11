@@ -5,6 +5,7 @@ enum SeatType {
 }
 
 export type Seat = SeatType;
+
 export const Seat = {
     occupied: SeatType.Occupied,
     floor: SeatType.Floor,

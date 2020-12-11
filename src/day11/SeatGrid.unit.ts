@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { SeatGrid } from "./SeatGrid";
+import { Position } from "./Position";
 
 describe("day 11 - SeatGrid", () => {
     it("evolveLegacy", () => {
@@ -16,7 +17,7 @@ describe("day 11 - SeatGrid", () => {
             L.LLLLL.LL
         `);
 
-        const grid1 = SeatGrid.evolveLegacy(grid0);
+        const grid1 = grid0.evolveLegacy();
         expectGrid(grid1).toEqual(`
             #.##.##.##
             #######.##
@@ -30,7 +31,7 @@ describe("day 11 - SeatGrid", () => {
             #.#####.##
         `);
 
-        const grid2 = SeatGrid.evolveLegacy(grid1);
+        const grid2 = grid1.evolveLegacy();
         expectGrid(grid2).toEqual(`
             #.LL.L#.##
             #LLLLLL.L#
@@ -44,7 +45,7 @@ describe("day 11 - SeatGrid", () => {
             #.#LLLL.##
         `);
 
-        const grid3 = SeatGrid.evolveLegacy(grid2);
+        const grid3 = grid2.evolveLegacy();
         expectGrid(grid3).toEqual(`
             #.##.L#.##
             #L###LL.L#
@@ -58,7 +59,7 @@ describe("day 11 - SeatGrid", () => {
             #.#L###.##
         `);
 
-        const grid4 = SeatGrid.evolveLegacy(grid3);
+        const grid4 = grid3.evolveLegacy();
         expectGrid(grid4).toEqual(`
             #.#L.L#.##
             #LLL#LL.L#
@@ -72,7 +73,7 @@ describe("day 11 - SeatGrid", () => {
             #.#L#L#.##
         `);
 
-        const grid5 = SeatGrid.evolveLegacy(grid4);
+        const grid5 = grid4.evolveLegacy();
         expectGrid(grid5).toEqual(`
             #.#L.L#.##
             #LLL#LL.L#
@@ -100,7 +101,7 @@ describe("day 11 - SeatGrid", () => {
             L.LLLLL.LL
         `);
 
-        const grid1 = SeatGrid.evolve(grid0);
+        const grid1 = grid0.evolve();
         expectGrid(grid1).toEqual(`
             #.##.##.##
             #######.##
@@ -114,7 +115,7 @@ describe("day 11 - SeatGrid", () => {
             #.#####.##
         `);
 
-        const grid2 = SeatGrid.evolve(grid1);
+        const grid2 = grid1.evolve();
         expectGrid(grid2).toEqual(`
             #.LL.LL.L#
             #LLLLLL.LL
@@ -128,7 +129,7 @@ describe("day 11 - SeatGrid", () => {
             #.LLLLL.L#
         `);
 
-        const grid3 = SeatGrid.evolve(grid2);
+        const grid3 = grid2.evolve();
         expectGrid(grid3).toEqual(`
             #.L#.##.L#
             #L#####.LL
@@ -142,7 +143,7 @@ describe("day 11 - SeatGrid", () => {
             #.L####.L#
         `);
 
-        const grid4 = SeatGrid.evolve(grid3);
+        const grid4 = grid3.evolve();
         expectGrid(grid4).toEqual(`
             #.L#.L#.L#
             #LLLLLL.LL
@@ -170,7 +171,9 @@ describe("day 11 - SeatGrid", () => {
             L.LLLLL.LL
         `);
 
-        const final = SeatGrid.evolveUntilStable(grid, SeatGrid.evolveLegacy);
+        const final = SeatGrid.evolveUntilStable(grid, (grid) =>
+            grid.evolveLegacy()
+        );
         expectGrid(final).toEqual(`
             #.#L.L#.##
             #LLL#LL.L#
@@ -198,11 +201,11 @@ describe("day 11 - SeatGrid", () => {
             #.#L#L#.##
         `);
 
-        const result = SeatGrid.countOccupied(grid);
+        const result = grid.countOccupied();
 
         expect(result).to.equal(37);
     });
-    describe("countVisibleOccupied", () => {
+    describe("countOccupiedVisibleFrom", () => {
         it("input 1", () => {
             const grid = SeatGrid.parse(`
                 .......#.
@@ -215,7 +218,7 @@ describe("day 11 - SeatGrid", () => {
                 #........
                 ...#.....
             `);
-            const result = SeatGrid.countVisibleOccupied(grid, { i: 4, j: 3 });
+            const result = grid.countOccupiedVisibleFrom(Position.new([4, 3]));
 
             expect(result).to.equal(8);
         });
@@ -225,7 +228,7 @@ describe("day 11 - SeatGrid", () => {
                 .L.L.#.#.#.#.
                 .............
             `);
-            const result = SeatGrid.countVisibleOccupied(grid, { i: 1, j: 1 });
+            const result = grid.countOccupiedVisibleFrom(Position.new([1, 1]));
 
             expect(result).to.equal(0);
         });
@@ -239,7 +242,7 @@ describe("day 11 - SeatGrid", () => {
                 #.#.#.#
                 .##.##.
             `);
-            const result = SeatGrid.countVisibleOccupied(grid, { i: 3, j: 3 });
+            const result = grid.countOccupiedVisibleFrom(Position.new([3, 3]));
 
             expect(result).to.equal(0);
         });
@@ -249,8 +252,8 @@ describe("day 11 - SeatGrid", () => {
 function expectGrid(actualGrid: SeatGrid) {
     return {
         toEqual(expectedGrid: string) {
-            const string1 = SeatGrid.toString(actualGrid);
-            const string2 = SeatGrid.toString(SeatGrid.parse(expectedGrid));
+            const string1 = actualGrid.toString();
+            const string2 = SeatGrid.parse(expectedGrid).toString();
             expect(string1).to.equal(string2);
         },
     };

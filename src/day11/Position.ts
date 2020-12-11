@@ -1,7 +1,3 @@
-export type Position = {
-    readonly i: number;
-    readonly j: number;
-};
 export type Direction = {
     readonly i: 1 | 0 | -1;
     readonly j: 1 | 0 | -1;
@@ -17,17 +13,24 @@ export const directions: Direction[] = [
     { i: 1, j: 1 },
 ];
 
+export interface Position {
+    readonly i: number;
+    readonly j: number;
+    getBlockAround(): Position[];
+    add(direction: Direction): Position;
+}
+
 export const Position = {
-    getBlockAround(position: Position): Position[] {
-        return directions.map((d) => ({
-            i: position.i + d.i,
-            j: position.j + d.j,
-        }));
-    },
-    add(position: Position, direction: Direction): Position {
+    new([i, j]: [i: number, j: number]): Position {
         return {
-            i: position.i + direction.i,
-            j: position.j + direction.j,
+            i,
+            j,
+            getBlockAround() {
+                return directions.map((d) => Position.new([i + d.i, j + d.j]));
+            },
+            add(direction) {
+                return Position.new([i + direction.i, j + direction.j]);
+            },
         };
     },
 };
