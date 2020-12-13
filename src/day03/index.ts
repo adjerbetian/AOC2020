@@ -15,7 +15,7 @@ const directions: Direction[] = [
     { right: 1, down: 2 },
 ];
 logger.part2(
-    µ.mult(
+    µ.product(
         directions.map((direction) => treeMap.countTreesInDirection(direction))
     )
 );

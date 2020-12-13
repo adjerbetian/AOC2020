@@ -7,24 +7,30 @@ export const µ = {
     sum(numbers: readonly number[]): number {
         return numbers.reduce((acc, n) => acc + n, 0);
     },
-    mult(numbers: readonly number[]) {
+    product(numbers: readonly number[]) {
         return numbers.reduce((acc, n) => acc * n, 1);
     },
     count<T>(list: readonly T[], predicate: (v: T) => boolean) {
         return list.filter(predicate).length;
     },
     maxWith<T>(values: readonly T[], predicate: (value: T) => number) {
-        return µ.max(values.map(predicate));
-    },
-    max(values: readonly number[]) {
-        return values.reduce((max, value) => Math.max(value, max));
-    },
-    minWith<T>(values: readonly T[], predicate: (value: T) => number): T {
         return values.reduce((max, value) => {
             if (predicate(value) > predicate(max)) {
                 return value;
             } else {
                 return max;
+            }
+        });
+    },
+    max(values: readonly number[]) {
+        return values.reduce((max, value) => Math.max(value, max));
+    },
+    minWith<T>(values: readonly T[], predicate: (value: T) => number): T {
+        return values.reduce((min, value) => {
+            if (predicate(value) < predicate(min)) {
+                return value;
+            } else {
+                return min;
             }
         });
     },
@@ -70,6 +76,9 @@ export const µ = {
     isNull(value: any): value is null {
         return value === null;
     },
+    isNotNull<T>(value: T): value is Exclude<T, null> {
+        return !µ.isNull(value);
+    },
     findIndexes<T>(
         array: readonly T[],
         predicate: (element: T) => boolean
@@ -83,6 +92,17 @@ export const µ = {
     },
     copyArray<T>(array: readonly T[]): T[] {
         return array.map((value) => value);
+    },
+    transpose<T>(matrix: T[][]): T[][] {
+        const n = matrix.length;
+        const m = matrix[0].length;
+        const result = Array.from({ length: m }).map(() =>
+            Array.from({ length: n })
+        );
+        matrix.forEach((line, i) =>
+            line.forEach((value, j) => (result[j][i] = value))
+        );
+        return result as T[][];
     },
     trimIndent(text: string) {
         let lines = text.split("\n");
