@@ -10,7 +10,8 @@
         "noImplicitAny": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "noEmit": true
+        "noEmit": true,
+        "downlevelIteration": true
     },
     "include": ["src"]
 }
