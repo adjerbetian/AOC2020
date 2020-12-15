@@ -79,6 +79,9 @@ export const µ = {
     isNotNull<T>(value: T): value is Exclude<T, null> {
         return !µ.isNull(value);
     },
+    isUndefined(value: any): value is undefined {
+        return value === undefined;
+    },
     findIndexes<T>(
         array: readonly T[],
         predicate: (element: T) => boolean
@@ -103,6 +106,10 @@ export const µ = {
             line.forEach((value, j) => (result[j][i] = value))
         );
         return result as T[][];
+    },
+    repeat<T>(n: number, f: () => T): T {
+        for (let i = 0; i < n - 1; i++) f();
+        return f();
     },
     trimIndent(text: string) {
         let lines = text.split("\n");
