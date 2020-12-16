@@ -8,4 +8,4 @@ const invalid = XMAS.findFirstInvalid(XMASData, 25)!;
 logger.part1(invalid);
 
 const set = XMAS.findContinuousSetSummingTo(XMASData, invalid);
-logger.part2(µ.sum(µ.range(set)));
+logger.part2(µ.sum(µ.rangeOf(set)));

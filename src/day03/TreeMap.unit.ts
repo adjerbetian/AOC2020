@@ -1,11 +1,10 @@
 import { expect } from "chai";
-import { µ } from "../utils";
 import { buildTreeMap } from "./TreeMap";
 import { Position } from "./Position";
 
 describe("day 03 - TreeMap", () => {
     const treeMap = buildTreeMap(
-        µ.trimIndent(`
+        trimIndent(`
             ..##.......
             #...#...#..
             .#....#..#.
@@ -50,3 +49,36 @@ describe("day 03 - TreeMap", () => {
         });
     });
 });
+
+function trimIndent(text: string) {
+    let lines = text.split("\n");
+    trimEmptyLines();
+    removeCommonIndentation();
+    trimEndOfLines();
+    return lines.join("\n");
+
+    function trimEmptyLines(): void {
+        while (isEmpty(lines[0])) lines.shift();
+        while (isEmpty(last(lines))) lines.pop();
+    }
+    function removeCommonIndentation(): void {
+        const indentation = computeCommonIndentation();
+        lines = lines.map((line) => line.substring(indentation));
+    }
+    function computeCommonIndentation(): number {
+        const lineIndentations = lines
+            .filter((line) => !isEmpty(line))
+            .map((line) => line.search(/\S|$/));
+        return Math.min(...lineIndentations);
+    }
+    function trimEndOfLines(): void {
+        lines = lines.map((line) => line.replace(/\s+$/, ""));
+    }
+    function isEmpty(line: string | undefined) {
+        if (!line) return true;
+        return /^\s*$/.test(line);
+    }
+    function last<T>(array: T[]): T | undefined {
+        return array[array.length - 1];
+    }
+}

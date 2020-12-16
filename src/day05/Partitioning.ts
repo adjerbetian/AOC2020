@@ -15,7 +15,7 @@ export const Partitioning = {
     },
     findMissingId(ids: number[]) {
         const idSet = new Set(ids);
-        const [min, max] = µ.range(ids);
+        const [min, max] = µ.rangeOf(ids);
         for (let id = min + 1; id < max; id++) {
             if (!idSet.has(id)) return id;
         }
