@@ -1,6 +1,13 @@
 import { Range } from "./types";
 
 export const µ = {
+    trim(text: string) {
+        return text
+            .trim()
+            .split("\n")
+            .map((line) => line.trim())
+            .join("\n");
+    },
     sumWith<T>(values: readonly T[], predicate: (value: T) => number) {
         return µ.sum(values.map(predicate));
     },
