@@ -18,7 +18,7 @@ export const Rule = {
         return Rule.new(id, [range1, range2].map(parseRange));
 
         function parseRange(range: string): Range {
-            const [min, max] = range.split("-").map((v) => parseInt(v));
+            const [min, max] = range.split("-").map(µ.toInt);
             return [min, max];
         }
     },

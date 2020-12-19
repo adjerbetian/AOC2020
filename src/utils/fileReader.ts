@@ -1,8 +1,9 @@
 import fs from "fs";
+import { µ } from "./micro";
 
 export const fileReader = {
     readIntLines(path: string) {
-        return this.readLines(path).map((s) => parseInt(s));
+        return this.readLines(path).map(µ.toInt);
     },
     readLines(path: string) {
         return this.read(path).split("\n");

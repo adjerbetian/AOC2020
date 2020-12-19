@@ -1,3 +1,5 @@
+import { µ } from "../utils";
+
 export type Ticket = number[];
 
 export const Ticket = {
@@ -5,6 +7,6 @@ export const Ticket = {
         return lines.map(Ticket.parse);
     },
     parse(line: string): Ticket {
-        return line.split(",").map((n) => parseInt(n));
+        return line.split(",").map(µ.toInt);
     },
 };

@@ -54,7 +54,7 @@ export const µ = {
         return [µ.min(numbers), µ.max(numbers)];
     },
     isInRange(n: number | string, [min, max]: Range) {
-        n = typeof n === "string" ? parseInt(n) : n;
+        n = µ.toInt(n);
         return n >= min && n <= max;
     },
     intersection<T>(set1: ReadonlySet<T>, set2: ReadonlySet<T>): Set<T> {
@@ -77,7 +77,8 @@ export const µ = {
     assertIsNever(arg: never): never {
         throw new Error(`Unexpected object ${arg}`);
     },
-    toInt(value: string) {
+    toInt(value: string | number) {
+        if (typeof value === "number") return value;
         return parseInt(value);
     },
     isNumber(value: any): value is number {
