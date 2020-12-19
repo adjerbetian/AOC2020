@@ -77,6 +77,9 @@ export const µ = {
     assertIsNever(arg: never): never {
         throw new Error(`Unexpected object ${arg}`);
     },
+    toInt(value: string) {
+        return parseInt(value);
+    },
     isNumber(value: any): value is number {
         return typeof value === "number";
     },
