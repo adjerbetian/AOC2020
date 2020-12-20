@@ -16,7 +16,7 @@ export const Pattern = {
             matchFrom(image, i, j) {
                 if (image.size - i < height) return false;
                 if (image.size - j < width) return false;
-                const block = image.block([i, j], width, height);
+                const block = image.extractBlock([i, j], width, height);
                 return motives.every((motive, i) =>
                     motive.every((value, j) => {
                         if (value === " ") return true;

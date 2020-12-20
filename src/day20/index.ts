@@ -20,6 +20,6 @@ const monsterPattern = Pattern.parse([
     " #  #  #  #  #  #   ",
 ]);
 image = image.fillPattern(monsterPattern, "O");
-const result = image.count((value) => value === "#");
+const result = image.countPixels((value) => value === "#");
 
 logger.part2(result);

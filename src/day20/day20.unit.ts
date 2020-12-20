@@ -178,7 +178,7 @@ describe("day 20", () => {
             " #  #  #  #  #  #   ",
         ]);
         image = image.fillPattern(monsterPattern, "O");
-        const result = image.count((value) => value === "#");
+        const result = image.countPixels((value) => value === "#");
 
         expect(result).to.equal(273);
     });

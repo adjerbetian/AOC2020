@@ -16,8 +16,8 @@ export const Tile = {
         return Tile.new(µ.toInt(id), Image.parse(image));
     },
     neighbours(tiles: Tile[]): Record<string, number[]> {
-        const map = Object.fromEntries(
-            tiles.map((tile) => [tile.id, [] as number[]])
+        const map = Object.fromEntries<number[]>(
+            tiles.map((tile) => [tile.id, []])
         );
         for (let i = 0; i < tiles.length; i++) {
             for (let j = i + 1; j < tiles.length; j++) {
@@ -41,11 +41,7 @@ export const Tile = {
 
         function fillCell(i: number, j: number) {
             let predicate = and<number[]>();
-            if (i === 0) {
-                if (j === 0 || j === n) predicate = and(predicate, isCorner);
-                else predicate = and(predicate, isBorder);
-            }
-            if (i === n) {
+            if (i === 0 || i === n) {
                 if (j === 0 || j === n) predicate = and(predicate, isCorner);
                 else predicate = and(predicate, isBorder);
             }
@@ -54,7 +50,7 @@ export const Tile = {
             if (j > 0)
                 predicate = and(predicate, hasNeighbour(result[i][j - 1]));
 
-            fillValue(i, j, predicate);
+            fillCellMatching(i, j, predicate);
         }
 
         function isCorner(neighbours: number[]) {
@@ -66,7 +62,7 @@ export const Tile = {
         function hasNeighbour(id: number): Predicate<number[]> {
             return (neighbours) => neighbours.includes(id);
         }
-        function fillValue(
+        function fillCellMatching(
             i: number,
             j: number,
             predicate: Predicate<number[]>
@@ -89,16 +85,22 @@ export const Tile = {
             image,
         };
     },
-    match(tile1: Tile, tile2: Tile): Tile | null {
-        return (
-            matchWithRotation(tile1, tile2) ||
-            matchWithRotation(tile1, flip(tile2))
-        );
+    match(fixedTile: Tile, tileToMatch: Tile): Tile | null {
+        try {
+            return Tile.new(
+                tileToMatch.id,
+                tileToMatch.image.findOrientation((img) =>
+                    img.alignsWith(fixedTile.image)
+                )
+            );
+        } catch (err) {
+            return null;
+        }
     },
     composeImage(tiles: Tile[], arrangement: number[][]): Image {
         const nTiles = Math.sqrt(tiles.length);
         const tileSize = tiles[0].image.size;
-        return buildImage(buildTileMatrix());
+        return mergeTilesIntoImage(buildTileMatrix());
 
         function buildTileMatrix() {
             const tileMatrix = µ.squareMatrix<Tile>(nTiles);
@@ -128,10 +130,7 @@ export const Tile = {
                 );
             }
             function align(tile: Tile, right: Tile, bottom: Tile): Tile {
-                return Tile.new(
-                    tile.id,
-                    tile.image.findOrientationUntil(isGood)
-                );
+                return Tile.new(tile.id, tile.image.findOrientation(isGood));
 
                 function isGood(image: Image) {
                     return (
@@ -141,7 +140,7 @@ export const Tile = {
                 }
             }
         }
-        function buildImage(tileMatrix: Tile[][]) {
+        function mergeTilesIntoImage(tileMatrix: Tile[][]) {
             const n = tileSize - 2;
             const pixels = µ.squareMatrix(n * nTiles, (i, j) => {
                 const tile = tileMatrix[intDiv(i, n)][intDiv(j, n)];
@@ -158,24 +157,6 @@ export const Tile = {
         }
     },
 };
-
-function matchWithRotation(t1: Tile, t2: Tile) {
-    return (
-        matchAsIs(t1, rotate(t2, 0)) ||
-        matchAsIs(t1, rotate(t2, 1)) ||
-        matchAsIs(t1, rotate(t2, 2)) ||
-        matchAsIs(t1, rotate(t2, 3))
-    );
-}
-function matchAsIs(t1: Tile, t2: Tile) {
-    return t1.image.alignsWith(t2.image) ? t2 : null;
-}
-function rotate(tile: Tile, k = 1): Tile {
-    return Tile.new(tile.id, tile.image.rotate(k));
-}
-function flip(tile: Tile): Tile {
-    return Tile.new(tile.id, tile.image.flip());
-}
 
 interface Predicate<T> {
     (value: T): boolean;
