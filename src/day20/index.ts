@@ -1,8 +1,9 @@
 import { buildLogger, fileReader, µ } from "../utils";
 import { Tile } from "./Tile";
+import { Pattern } from "./Pattern";
 
 const logger = buildLogger("day 20");
-const tiles = fileReader.read("day20/input.txt").split("\n\n").map(Tile.parse);
+const tiles = Tile.parseAll(fileReader.read("day20/input.txt"));
 
 const arrangement = Tile.arrange(tiles);
 const corners = Object.entries(arrangement)
@@ -11,4 +12,14 @@ const corners = Object.entries(arrangement)
     .map(µ.toInt);
 
 logger.part1(µ.product(corners));
-logger.part2();
+
+let image = Tile.composeImage(tiles, arrangement);
+const monsterPattern = Pattern.parse([
+    "                  # ",
+    "#    ##    ##    ###",
+    " #  #  #  #  #  #   ",
+]);
+image = image.fillPattern(monsterPattern, "O");
+const result = image.count((value) => value === "#");
+
+logger.part2(result);

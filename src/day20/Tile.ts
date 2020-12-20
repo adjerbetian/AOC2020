@@ -1,24 +1,21 @@
 import { µ } from "../utils";
+import { Image } from "./Image";
 
 interface Tile {
     readonly id: number;
-    readonly image: string[];
-    readonly borders: Borders;
-}
-interface Borders {
-    left: string;
-    right: string;
-    top: string;
-    bottom: string;
+    readonly image: Image;
 }
 
 export const Tile = {
+    parseAll(text: string): Tile[] {
+        return µ.trim(text).split("\n\n").map(Tile.parse);
+    },
     parse(text: string): Tile {
         const [idLine, ...image] = µ.trim(text).split("\n");
         const id = idLine.match(/^Tile (\d+):$/)![1];
-        return Tile.new(µ.toInt(id), image);
+        return Tile.new(µ.toInt(id), Image.parse(image));
     },
-    arrange(tiles: Tile[]): Record<string, number[]> {
+    neighbours(tiles: Tile[]): Record<string, number[]> {
         const map = Object.fromEntries(
             tiles.map((tile) => [tile.id, [] as number[]])
         );
@@ -32,63 +29,158 @@ export const Tile = {
         }
         return map;
     },
-    new(id: number, image: string[]): Tile {
+    arrange(tiles: Tile[]): number[][] {
+        const n = Math.sqrt(tiles.length) - 1;
+        const allNeighbours = Tile.neighbours(tiles);
+        const done = new Set<number>();
+        const result: number[][] = µ.squareMatrix(n + 1);
+
+        for (let i = 0; i <= n; i++)
+            for (let j = 0; j <= n; j++) fillCell(i, j);
+        return result;
+
+        function fillCell(i: number, j: number) {
+            let predicate = and<number[]>();
+            if (i === 0) {
+                if (j === 0 || j === n) predicate = and(predicate, isCorner);
+                else predicate = and(predicate, isBorder);
+            }
+            if (i === n) {
+                if (j === 0 || j === n) predicate = and(predicate, isCorner);
+                else predicate = and(predicate, isBorder);
+            }
+            if (i > 0)
+                predicate = and(predicate, hasNeighbour(result[i - 1][j]));
+            if (j > 0)
+                predicate = and(predicate, hasNeighbour(result[i][j - 1]));
+
+            fillValue(i, j, predicate);
+        }
+
+        function isCorner(neighbours: number[]) {
+            return neighbours.length === 2;
+        }
+        function isBorder(neighbours: number[]) {
+            return neighbours.length === 3;
+        }
+        function hasNeighbour(id: number): Predicate<number[]> {
+            return (neighbours) => neighbours.includes(id);
+        }
+        function fillValue(
+            i: number,
+            j: number,
+            predicate: Predicate<number[]>
+        ) {
+            const id = findTile(predicate);
+            result[i][j] = id;
+            done.add(id);
+        }
+        function findTile(predicate: Predicate<number[]>): number {
+            return µ.toInt(
+                Object.entries(allNeighbours)
+                    .filter(([id]) => !done.has(µ.toInt(id)))
+                    .find(([, neighbours]) => predicate(neighbours))![0]
+            );
+        }
+    },
+    new(id: number, image: Image): Tile {
         return {
             id,
             image,
-            borders: {
-                left: image.map(µ.first).join(""),
-                right: image.map(µ.last).join(""),
-                top: µ.first(image),
-                bottom: µ.last(image),
-            },
         };
     },
-    match(tile1: Tile, tile2: Tile): boolean {
+    match(tile1: Tile, tile2: Tile): Tile | null {
         return (
-            matchWithRotation(tile1.borders, tile2.borders) ||
-            matchWithRotation(tile1.borders, flip(tile2.borders))
+            matchWithRotation(tile1, tile2) ||
+            matchWithRotation(tile1, flip(tile2))
         );
+    },
+    composeImage(tiles: Tile[], arrangement: number[][]): Image {
+        const nTiles = Math.sqrt(tiles.length);
+        const tileSize = tiles[0].image.size;
+        return buildImage(buildTileMatrix());
+
+        function buildTileMatrix() {
+            const tileMatrix = µ.squareMatrix<Tile>(nTiles);
+            for (let i = 0; i < nTiles; i++) {
+                for (let j = 0; j < nTiles; j++) {
+                    tileMatrix[i][j] = getOrientedTile(i, j);
+                }
+            }
+            return tileMatrix;
+
+            function getOrientedTile(i: number, j: number): Tile {
+                const tile = getTile(arrangement[i][j]);
+
+                if (i === 0 && j === 0) return getOrigin();
+                if (j === 0) return Tile.match(tileMatrix[i - 1][j], tile)!;
+                else return Tile.match(tileMatrix[i][j - 1], tile)!;
+            }
+            function getTile(id: number) {
+                return tiles.find((tile) => tile.id === id)!;
+            }
+            function getOrigin(): Tile {
+                if (tiles.length === 1) return tiles[0];
+                return align(
+                    getTile(arrangement[0][0]),
+                    getTile(arrangement[0][1]),
+                    getTile(arrangement[1][0])
+                );
+            }
+            function align(tile: Tile, right: Tile, bottom: Tile): Tile {
+                return Tile.new(
+                    tile.id,
+                    tile.image.findOrientationUntil(isGood)
+                );
+
+                function isGood(image: Image) {
+                    return (
+                        image.canAlignLeftWith(right.image) &&
+                        image.canAlignTopWith(bottom.image)
+                    );
+                }
+            }
+        }
+        function buildImage(tileMatrix: Tile[][]) {
+            const n = tileSize - 2;
+            const pixels = µ.squareMatrix(n * nTiles, (i, j) => {
+                const tile = tileMatrix[intDiv(i, n)][intDiv(j, n)];
+                return tile.image.at(remainder(i, n) + 1, remainder(j, n) + 1);
+            });
+            return Image.new(pixels);
+
+            function intDiv(n: number, q: number) {
+                return Math.floor(n / q);
+            }
+            function remainder(n: number, q: number) {
+                return n % q;
+            }
+        }
     },
 };
 
-function matchWithRotation(b1: Borders, b2: Borders) {
+function matchWithRotation(t1: Tile, t2: Tile) {
     return (
-        matchAsIs(b1, rotateN(0, b2)) ||
-        matchAsIs(b1, rotateN(1, b2)) ||
-        matchAsIs(b1, rotateN(2, b2)) ||
-        matchAsIs(b1, rotateN(3, b2))
+        matchAsIs(t1, rotate(t2, 0)) ||
+        matchAsIs(t1, rotate(t2, 1)) ||
+        matchAsIs(t1, rotate(t2, 2)) ||
+        matchAsIs(t1, rotate(t2, 3))
     );
 }
-function matchAsIs(b1: Borders, b2: Borders) {
-    return (
-        b1.left === b2.right ||
-        b1.right === b2.left ||
-        b1.top === b2.bottom ||
-        b1.bottom === b2.top
-    );
+function matchAsIs(t1: Tile, t2: Tile) {
+    return t1.image.alignsWith(t2.image) ? t2 : null;
 }
-function rotateN(n: number, borders: Borders): Borders {
-    if (n === 0) return borders;
-    return rotateN(n - 1, rotate(borders));
+function rotate(tile: Tile, k = 1): Tile {
+    return Tile.new(tile.id, tile.image.rotate(k));
 }
-function rotate(borders: Borders): Borders {
-    // noinspection JSSuspiciousNameCombination
-    return {
-        left: borders.bottom,
-        top: reverse(borders.left),
-        right: borders.top,
-        bottom: reverse(borders.right),
-    };
+function flip(tile: Tile): Tile {
+    return Tile.new(tile.id, tile.image.flip());
 }
-function flip(borders: Borders): Borders {
-    return {
-        left: reverse(borders.left),
-        right: reverse(borders.right),
-        top: borders.bottom,
-        bottom: borders.top,
-    };
+
+interface Predicate<T> {
+    (value: T): boolean;
 }
-function reverse(line: string) {
-    return line.split("").reverse().join("");
+function and<T>(...predicates: Predicate<T>[]): Predicate<T> {
+    return (value) =>
+        predicates.reduce<boolean>((result, p) => result && p(value), true);
 }

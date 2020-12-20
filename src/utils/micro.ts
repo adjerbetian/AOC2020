@@ -8,7 +8,10 @@ export const µ = {
             .map((line) => line.trim())
             .join("\n");
     },
-    sumWith<T>(values: readonly T[], predicate: (value: T) => number) {
+    sumWith<T>(
+        values: readonly T[],
+        predicate: (value: T, index: number) => number
+    ) {
         return µ.sum(values.map(predicate));
     },
     sum(numbers: readonly number[]): number {
@@ -17,7 +20,7 @@ export const µ = {
     product(numbers: readonly number[]) {
         return numbers.reduce((acc, n) => acc * n, 1);
     },
-    count<T>(list: readonly T[], predicate: (v: T) => boolean) {
+    count<T>(list: readonly T[], predicate: (v: T, i: number) => boolean) {
         return list.filter(predicate).length;
     },
     maxWith<T>(values: readonly T[], predicate: (value: T) => number) {
@@ -129,8 +132,29 @@ export const µ = {
             (_, i) => range[0] + i
         );
     },
-    array<T>(length: number): T[] {
-        return Array.from({ length });
+    array<T>(length: number, value?: T | ((i: number) => T)): T[] {
+        const result = Array.from({ length });
+        if (value === undefined) return result as T[];
+        if (typeof value === "function")
+            return result.map((_, i) => (value as Function)(i));
+        return result.map(() => value);
+    },
+    squareMatrix<T>(
+        n: number,
+        value?: T | ((i: number, j: number) => T)
+    ): T[][] {
+        return µ.matrix(n, n, value);
+    },
+    matrix<T>(
+        n: number,
+        m: number,
+        value?: T | ((i: number, j: number) => T)
+    ): T[][] {
+        if (typeof value === "function")
+            return µ.array(n, (i) =>
+                µ.array(m, (j) => (value as Function)(i, j))
+            );
+        else return µ.array(n, () => µ.array(m, value));
     },
 };
 
