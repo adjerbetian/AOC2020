@@ -118,6 +118,8 @@ export const µ = {
         );
         return result as T[][];
     },
+    last,
+    first,
     repeat<T>(n: number, f: () => T): T {
         for (let i = 0; i < n - 1; i++) f();
         return f();
@@ -131,3 +133,15 @@ export const µ = {
         return Array.from({ length });
     },
 };
+
+function last(text: string): string;
+function last<T>(array: readonly T[]): T;
+function last(array: string | readonly any[]) {
+    return array[array.length - 1];
+}
+
+function first(text: string): string;
+function first<T>(array: readonly T[]): T;
+function first(array: string | readonly any[]) {
+    return array[0];
+}
