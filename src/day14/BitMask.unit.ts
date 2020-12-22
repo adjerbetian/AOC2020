@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { BitMask } from "./BitMask";
 
-describe("BitMask", () => {
+describe("day 14 - BitMask", () => {
     it("should apply itself to the number", () => {
         const mask = BitMask.new("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X");
 
