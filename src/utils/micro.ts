@@ -127,10 +127,10 @@ export const µ = {
         for (let i = 0; i < n - 1; i++) f();
         return f();
     },
-    rangeToList(range: Range): number[] {
-        return Array.from({ length: range[1] - range[0] + 1 }).map(
-            (_, i) => range[0] + i
-        );
+    rangeToList(range: Range, step = 1): number[] {
+        return Array.from({
+            length: Math.floor((range[1] - range[0] + 1) / step),
+        }).map((_, i) => range[0] + i * step);
     },
     array<T>(length: number, value?: T | ((i: number) => T)): T[] {
         const result = Array.from({ length });
