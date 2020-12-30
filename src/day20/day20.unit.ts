@@ -93,7 +93,7 @@ describe("day 20", () => {
                 #....##..#.#########..##
                 #...#.....#..##...###.##
                 #..###....##.#...##.##.#
-            `.replaceAll("O", "#")
+            `.replace(/O/g, "#")
         );
 
         const pattern = Pattern.parse([
